@@ -38,6 +38,7 @@ const res = await fetch(`https://discord.com/api/v9/applications/${DISCORD_APP_I
 });
 if (!res.ok) {
   console.log(`::error::Discord widget update failed: ${res.status} ${await res.text()}`);
-  process.exit(1);
+  process.exitCode = 1;
+} else {
+  console.log(`Discord widget updated: ${stats.streak}-day streak, ${stats.month_distance}.`);
 }
-console.log(`Discord widget updated: ${stats.streak}-day streak, ${stats.month_distance}.`);
