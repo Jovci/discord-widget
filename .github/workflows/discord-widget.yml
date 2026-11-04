@@ -1,0 +1,48 @@
+name: Update Discord widget
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Fetch Strava runs
+        env:
+          STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+          STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
+          TZ: America/Los_Angeles
+        run: node scripts/strava.mjs
+      # Discord image fields need a raster image. 2x for sharp dots.
+      - name: Render PNG
+        run: |
+          sudo apt-get install -y -qq librsvg2-bin
+          rsvg-convert -z 2 out/discord-graph.svg -o out/discord-graph.png
+      # The widget branch holds only the latest PNG in a single commit, so main gets no update commits.
+      - name: Publish to widget branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir publish && cp out/discord-graph.png publish/ && cd publish
+          git init -q -b widget
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add . && git commit -q -m "Discord graph"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" widget
+      # Runs after publishing so Discord fetches the new PNG. Skips itself without a bot token.
+      - name: Update Discord widget
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_APP_ID: ${{ secrets.DISCORD_APP_ID || vars.DISCORD_APP_ID }}
+          DISCORD_USER_ID: ${{ secrets.DISCORD_USER_ID || vars.DISCORD_USER_ID }}
+        run: node scripts/discord-widget.mjs

@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+body{margin:0;background:#1a1717;font-family:"gg sans","Segoe UI",Arial,sans-serif;color:#f2f3f5;padding:24px}
+.tabs{display:flex;gap:24px;font-weight:600;font-size:15px;border-bottom:1px solid #3a3636;padding-bottom:10px;width:430px}
+.tabs span:first-child{border-bottom:2px solid #fff;padding-bottom:9px;margin-bottom:-11px}.tabs span{color:#b5bac1}.tabs span:first-child{color:#fff}
+h4{margin:22px 0 14px;font-size:15px}
+.card{width:430px;background:#252323;border-radius:14px;overflow:hidden}
+.top{position:relative;height:170px;border-bottom:1px solid #3a3636}
+.hero{position:absolute;right:0;top:0;bottom:0;width:58%;background:url("file:///C:/CS/jovci/assets/cannoli-medals.jpg") center 55%/cover;
+ -webkit-mask-image:linear-gradient(to right,transparent,#000 45%);mask-image:linear-gradient(to right,transparent,#000 45%)}
+.title{position:absolute;left:16px;top:14px;font-weight:600;font-size:14px;display:flex;align-items:center;gap:7px}
+.title i{width:16px;height:16px;border-radius:4px;background:#fc4c02;display:inline-block;font-style:normal;font-size:11px;text-align:center;line-height:16px}
+.stat{position:absolute;left:16px}.n{font-size:34px;font-weight:800;line-height:1}.l{font-size:12px;color:#b5bac1;margin-top:3px}
+.bottom{padding:14px 16px 16px}
+.grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,15px);gap:5px 0;justify-content:space-between}
+.d{width:11px;height:11px;border-radius:50%;box-sizing:border-box;border:1.5px solid #3f3c3c}
+.d.r{background:#34c759;border:none}.d.t{border-color:#f2f3f5}.d.f{border:none}
+.m{display:flex;justify-content:space-between;font-size:10px;color:#949ba4;margin-bottom:6px}
+</style></head><body>
+<div class="tabs"><span>Board</span><span>Activity</span><span>Wishlist</span></div>
+<h4>Your Widgets</h4>
+<div class="card">
+ <div class="top"><div class="hero"></div>
+  <div class="title"><i>▲</i>running</div>
+  <div class="stat" style="top:52px"><div class="n" id="streak"></div><div class="l">day run streak</div></div>
+  <div class="stat" style="top:112px"><div class="n" style="font-size:22px" id="month"></div><div class="l" id="monthl"></div></div>
+ </div>
+ <div class="bottom"><div class="m" id="months"></div><div class="grid" id="grid"></div></div>
+</div>
+<script>
+const byDay={"2026-07-08":8537.9,"2026-07-10":5528.8,"2026-07-12":6217.9,"2026-07-14":5340,"2026-07-16":8907.1,"2026-07-17":8253.3,"2026-07-19":9844.8,"2026-07-21":6051.4,"2026-07-24":8206.8,"2026-07-26":4634.9,"2026-07-29":9072.3,"2026-08-04":8069.9,"2026-08-05":8056.4,"2026-08-06":6926.8,"2026-08-07":6130.8,"2026-08-09":5859.8,"2026-08-11":2141.5,"2026-08-13":7713.9,"2026-08-14":3750.1,"2026-08-16":6066.8,"2026-08-18":4529.9,"2026-08-19":6600.2,"2026-08-20":6019.4,"2026-08-22":8055.6,"2026-08-23":4542.2,"2026-08-24":1635.7,"2026-08-26":4245.2,"2026-08-27":4232.2,"2026-08-28":6537.4,"2026-08-30":8248.3,"2026-09-01":6289.5,"2026-09-02":11834.9,"2026-09-03":4548.2,"2026-09-04":12964,"2026-09-06":13247.8,"2026-09-08":5275,"2026-09-10":19609.699999999997,"2026-09-13":23796,"2026-09-15":8205.4,"2026-09-17":9914.5,"2026-09-18":5345.5,"2026-09-20":24819.2,"2026-09-25":3929.9,"2026-09-27":5366,"2026-09-28":3462.9,"2026-09-29":2429.1,"2026-09-30":5130.1,"2026-10-01":1687.8,"2026-10-02":1734.2,"2026-10-03":1760.9,"2026-10-04":2097.5,"2026-10-05":1813.9,"2026-10-06":5817.6,"2026-10-07":2915.5,"2026-10-08":1668.9,"2026-10-09":1733.1,"2026-10-10":1922.1,"2026-10-11":42418,"2026-10-12":1692.4,"2026-10-13":1864.3,"2026-10-14":1731.7,"2026-10-15":2727.4,"2026-10-16":1625.5,"2026-10-17":4854.4,"2026-10-18":3232,"2026-10-19":4141.5,"2026-10-20":5093.5,"2026-10-21":6191.9,"2026-10-22":5366.5,"2026-10-23":3267.7,"2026-10-24":17091,"2026-10-25":2695.4,"2026-10-26":6027.5,"2026-10-27":3296.3,"2026-10-28":1836.9,"2026-10-29":1894.1,"2026-10-30":1880.8,"2026-10-31":2369.6,"2026-11-01":6657.7,"2026-11-02":10357.9,"2026-11-03":2238.1};const W=16,P=1609.344;
+const k=d=>d.toISOString().slice(0,10);const today=new Date('2026-11-04T00:00:00Z');
+let d=new Date(today);if(!byDay[k(d)])d.setUTCDate(d.getUTCDate()-1);let n=0;while(byDay[k(d)]){n++;d.setUTCDate(d.getUTCDate()-1);}
+streak.textContent=n;let m=0;for(const[x,v]of Object.entries(byDay))if(x.startsWith('2026-11'))m+=v;month.textContent=(m/P).toFixed(1)+' mi';monthl.textContent='in Nov';
+const start=new Date(today);start.setUTCDate(start.getUTCDate()-today.getUTCDay()-(W-1)*7);const names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];let ms=[],last=-1;
+for(let w=0;w<W;w++){for(let i=0;i<7;i++){const x=new Date(start);x.setUTCDate(x.getUTCDate()+w*7+i);const e=document.createElement('div');const kk=k(x);
+ e.className='d'+(x>today?' f':byDay[kk]?' r':kk===k(today)?' t':'');grid.appendChild(e);if(i==0&&x.getUTCMonth()!==last){last=x.getUTCMonth();ms.push(names[last]);}}}
+months.innerHTML=ms.map(s=>'<span>'+s+'</span>').join('');
+</script></body></html>
